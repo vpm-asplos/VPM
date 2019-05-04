@@ -1,0 +1,40 @@
+  CHK     include/config/kernel.release
+  CHK     include/generated/uapi/linux/version.h
+  CHK     include/generated/utsrelease.h
+  CHK     include/generated/bounds.h
+  CHK     include/generated/timeconst.h
+  CHK     include/generated/asm-offsets.h
+  CALL    scripts/checksyscalls.sh
+  DESCEND  objtool
+  CHK     scripts/mod/devicetable-offsets.h
+  CHK     include/generated/compile.h
+  CHK     kernel/config_data.h
+  CC      pmm/pattach.o
+pmm/pattach.c: In function ‘SYSC_pattach’:
+pmm/pattach.c:85:14: error: ‘struct pmm_store’ has no member named ‘euid’
+     cur_store->euid = cred->euid;
+              ^~
+pmm/pattach.c:86:14: error: ‘struct pmm_store’ has no member named ‘egid’
+     cur_store->egid = cred->egid;
+              ^~
+pmm/pattach.c:118:40: error: ‘struct pmm_store’ has no member named ‘euid’
+     if(!permission_rw(pdb.stores[check].euid, pdb.stores[check].egid,
+                                        ^
+pmm/pattach.c:118:64: error: ‘struct pmm_store’ has no member named ‘egid’
+     if(!permission_rw(pdb.stores[check].euid, pdb.stores[check].egid,
+                                                                ^
+pmm/pattach.c:120:67: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+      printk("Attach failed because of no permission! permission: %x",
+                                                                  ~^
+                                                                  %lx
+        pdb.stores[check].perm);
+        ~~~~~~~~~~~~~~~~~~~~~~                                      
+pmm/pattach.c: In function ‘SYSC_pchmod’:
+pmm/pattach.c:181:43: error: ‘struct pmm_store’ has no member named ‘euid’
+   if(cred->euid.val == current->mm->pstore->euid.val ||
+                                           ^~
+pmm/pattach.c:188:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+make[1]: *** [scripts/Makefile.build:315: pmm/pattach.o] Error 1
+make: *** [Makefile:1028: pmm] Error 2
